@@ -1,14 +1,12 @@
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from dotenv import load_dotenv
 import os
 from openai import OpenAI
 
-# Load environment variables
-load_dotenv()
-
 app = FastAPI()
+
+# CORS setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,7 +14,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# Initialize OpenAI client
+
+# OpenAI client (Render handles env variables automatically)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 class ContractRequest(BaseModel):
@@ -24,7 +23,7 @@ class ContractRequest(BaseModel):
 
 @app.get("/")
 def home():
-    return {"message": "Contract AI with Real AI is running 🚀"}
+    return {"message": "API is working 🚀"}
 
 @app.post("/analyze")
 def analyze_contract(contract: ContractRequest):
@@ -53,7 +52,7 @@ def analyze_contract(contract: ContractRequest):
 
         return {"analysis": response.choices[0].message.content}
 
-    except Exception as e:
+    except Exception:
         return {
             "analysis": "⚠️ AI quota exceeded. Running basic fallback analysis.\n\nBasic analysis: Contract received and processed."
         }
