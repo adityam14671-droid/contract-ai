@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contract AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .container {
+            width: 800px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            resize: vertical;
+            font-size: 14px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 12px;
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+
+        .loading {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>AI Contract Risk Analyzer</h1>
+
+    <textarea id="contractText" rows="10" placeholder="Paste your contract here..."></textarea>
+
+    <button onclick="analyze()">Analyze Contract</button>
+
+    <div class="loading" id="loading">Analyzing... Please wait.</div>
+
+    <div class="result-box" id="result"></div>
+</div>
+
+<script>
+async function analyze() {
+    const text = document.getElementById("contractText").value;
+    const resultBox = document.getElementById("result");
+    const loading = document.getElementById("loading");
+
+    if (!text.trim()) {
+        alert("Please paste a contract first.");
+        return;
+    }
+
+    resultBox.textContent = "";
+    loading.style.display = "block";
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/analyze", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ text })
+        });
+
+        const data = await response.json();
+
+        loading.style.display = "none";
+        resultBox.textContent = data.analysis;
+
+    } catch (error) {
+        loading.style.display = "none";
+        resultBox.textContent = "Error connecting to server.";
+        console.error(error);
+    }
+}
+</script>
+
+</body>
+</html>
