@@ -30,7 +30,6 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
 
 @app.post("/analyze")
 def analyze_contract(
-    request: ContractRequest,
     current_user: str = Depends(get_current_user)
 ):
     return {
