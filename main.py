@@ -1,11 +1,17 @@
-# ===== JWT AUTH SETUP =====
-
+# ===== IMPORTS =====
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from fastapi import Depends, HTTPException
 
+# ===== CREATE APP FIRST =====
+app = FastAPI()
+
+# ===== CONFIG =====
+SECRET_KEY = "supersecretkey"
+ALGORITHM = "HS256"
+
+# ===== JWT SETUP =====
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
-
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
@@ -20,8 +26,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-
-# ===== PROTECTED ROUTE =====
+# ===== ROUTES =====
 
 @app.post("/analyze")
 def analyze_contract(
