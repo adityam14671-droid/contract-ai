@@ -4,3 +4,4 @@ openai
 pydantic
 passlib[bcrypt]
 python-jose
+python-multipart
